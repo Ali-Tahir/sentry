@@ -38,6 +38,7 @@ const OrganizationContext = createReactClass({
     organizationsLoading: PropTypes.bool,
     organizations: PropTypes.arrayOf(SentryTypes.Organization),
     finishProfile: PropTypes.func,
+    detailed: PropTypes.bool,
   },
 
   childContextTypes: {
@@ -48,6 +49,12 @@ const OrganizationContext = createReactClass({
     Reflux.listenTo(ProjectActions.createSuccess, 'onProjectCreation'),
     Reflux.listenTo(OrganizationStore, 'loadOrganization'),
   ],
+
+  getDefaultProps() {
+    return {
+      detailed: true,
+    };
+  },
 
   getInitialState() {
     // retrieve initial state from store
@@ -129,7 +136,11 @@ const OrganizationContext = createReactClass({
       return;
     }
     metric.mark('organization-details-fetch-start');
-    fetchOrganizationDetails(this.props.api, this.getOrganizationSlug(), true);
+    fetchOrganizationDetails(
+      this.props.api,
+      this.getOrganizationSlug(),
+      this.props.detailed
+    );
   },
 
   loadOrganization(orgData) {
