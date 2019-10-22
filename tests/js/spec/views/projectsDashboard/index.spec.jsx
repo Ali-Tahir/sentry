@@ -291,7 +291,7 @@ describe('ProjectsDashboard', function() {
     });
 
     it('renders an error from withTeamsForUser', function() {
-      const wrapper = mount(
+      const wrapper = mountWithTheme(
         <Dashboard error={Error('uhoh')} organization={org} params={{orgId: org.slug}} />,
         routerContext
       );
