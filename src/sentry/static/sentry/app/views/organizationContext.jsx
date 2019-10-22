@@ -57,8 +57,23 @@ const OrganizationContext = createReactClass({
   },
 
   getInitialState() {
-    // retrieve initial state from store
-    return OrganizationStore.get();
+    const {organization, dirty} = OrganizationStore.get();
+    if (
+      !dirty &&
+      organization &&
+      organization.slug === this.getOrganizationSlug() &&
+      organization.projects &&
+      organization.teams
+    ) {
+      // retrieve initial state from store
+      return OrganizationStore.get();
+    }
+    return {
+      loading: true,
+      error: null,
+      errorType: null,
+      organization: null,
+    };
   },
 
   getChildContext() {
@@ -160,6 +175,7 @@ const OrganizationContext = createReactClass({
       // We do not want to load the user's last used env/project in this case, otherwise will
       // lead to very confusing behavior.
       if (
+        this.props.detailed &&
         !this.props.routes.find(
           ({path}) => path && path.includes('/organizations/:orgId/issues/:groupId/')
         )

@@ -15,7 +15,7 @@ import img from '../../images/dashboard/hair-on-fire.svg';
 
 type Props = {
   organization: Organization;
-  projects: Project[];
+  projects?: Project[];
 };
 
 export default class NoProjectMessage extends React.Component<Props> {
