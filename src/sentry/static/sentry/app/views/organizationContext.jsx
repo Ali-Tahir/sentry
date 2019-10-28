@@ -57,14 +57,7 @@ const OrganizationContext = createReactClass({
   },
 
   getInitialState() {
-    const {organization, dirty} = OrganizationStore.get();
-    if (
-      !dirty &&
-      organization &&
-      organization.slug === this.getOrganizationSlug() &&
-      organization.projects &&
-      organization.teams
-    ) {
+    if (this.isOrgStorePopulatedCorrectly()) {
       // retrieve initial state from store
       return OrganizationStore.get();
     }
@@ -134,20 +127,25 @@ const OrganizationContext = createReactClass({
     );
   },
 
+  isOrgStorePopulatedCorrectly() {
+    const {detailed} = this.props;
+    const {organization, dirty} = OrganizationStore.get();
+
+    return (
+      !dirty &&
+      organization &&
+      organization.slug === this.getOrganizationSlug() &&
+      (!detailed || (detailed && organization.projects && organization.teams))
+    );
+  },
+
   fetchData() {
     if (!this.getOrganizationSlug()) {
       this.setState({loading: this.props.organizationsLoading});
       return;
     }
     // fetch from the store, then fetch from the API if necessary
-    const {organization, dirty} = OrganizationStore.get();
-    if (
-      !dirty &&
-      organization &&
-      organization.slug === this.getOrganizationSlug() &&
-      organization.projects &&
-      organization.teams
-    ) {
+    if (this.isOrgStorePopulatedCorrectly()) {
       return;
     }
     metric.mark('organization-details-fetch-start');
