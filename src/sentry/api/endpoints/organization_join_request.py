@@ -13,7 +13,6 @@ from sentry.api.validators import AllowedEmailField
 from sentry.app import ratelimiter
 from sentry.models import AuthProvider, InviteStatus, OrganizationMember
 
-JOIN_REQUEST_EXPERIMENT = "JoinRequestExperiment"
 
 logger = logging.getLogger(__name__)
 
@@ -55,8 +54,8 @@ class OrganizationJoinRequestEndpoint(OrganizationEndpoint):
     permission_classes = []
 
     def post(self, request, organization):
-        assignment = experiments.get(org=organization, experiment_name=JOIN_REQUEST_EXPERIMENT)
-        if assignment != 1:
+        variant = experiments.get(org=organization, experiment_name="ImprovedInvitesExperiment")
+        if variant not in ("all", "join_request"):
             return Response(status=403)
 
         if organization.get_option("sentry:join_requests") is False:

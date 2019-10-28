@@ -140,7 +140,7 @@ describe('OrganizationRequestsView', function() {
     });
 
     const org = TestStubs.Organization({
-      experiments: {InviteRequestExperiment: 0},
+      experiments: {ImprovedInvitesExperiment: 'none'},
       access: ['member:admin', 'org:admin', 'member:write'],
       status: {
         id: 'active',
@@ -172,7 +172,7 @@ describe('OrganizationRequestsView', function() {
     });
 
     const org = TestStubs.Organization({
-      experiments: {InviteRequestExperiment: 1},
+      experiments: {ImprovedInvitesExperiment: 'all'},
       access: [],
       status: {
         id: 'active',
@@ -193,7 +193,7 @@ describe('OrganizationRequestsView', function() {
 
   it('can approve invite request and update', async function() {
     const org = TestStubs.Organization({
-      experiments: {InviteRequestExperiment: 1},
+      experiments: {ImprovedInvitesExperiment: 'all'},
       access: ['member:admin', 'org:admin', 'member:write'],
       status: {
         id: 'active',
@@ -240,7 +240,7 @@ describe('OrganizationRequestsView', function() {
 
   it('can deny invite request and update', async function() {
     const org = TestStubs.Organization({
-      experiments: {JoinRequestExperiment: 1},
+      experiments: {ImprovedInvitesExperiment: 'all'},
       access: ['member:admin', 'org:admin', 'member:write'],
       status: {
         id: 'active',

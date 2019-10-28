@@ -39,13 +39,24 @@ class OrganizationMembersWrapper extends AsyncView<Props> {
   get hasExperiment() {
     const {organization} = this.props;
 
+    return (
+      organization &&
+      organization.experiments &&
+      organization.experiments.ImprovedInvitesExperiment !== undefined &&
+      organization.experiments.ImprovedInvitesExperiment !== 'none'
+    );
+  }
+
+  get hasInviteRequestExperiment() {
+    const {organization} = this.props;
+
     if (!organization || !organization.experiments) {
       return false;
     }
-    return (
-      organization.experiments.JoinRequestExperiment === 1 ||
-      organization.experiments.InviteRequestExperiment === 1
-    );
+
+    const variant = organization.experiments.ImprovedInvitesExperiment;
+
+    return variant === 'all' || variant === 'invite_request';
   }
 
   get hasWriteAccess() {
@@ -54,6 +65,10 @@ class OrganizationMembersWrapper extends AsyncView<Props> {
       return false;
     }
     return organization.access.includes('member:write');
+  }
+
+  get canOpeninviteModal() {
+    return this.hasWriteAccess || this.hasInviteRequestExperiment;
   }
 
   get showInviteRequests() {
@@ -116,9 +131,9 @@ class OrganizationMembersWrapper extends AsyncView<Props> {
             priority="primary"
             size="small"
             onClick={openInviteMembersModal}
-            disabled={!this.hasWriteAccess}
+            disabled={!this.canOpeninviteModal}
             title={
-              !this.hasWriteAccess
+              !this.canOpeninviteModal
                 ? t('You do not have enough permission to add new members')
                 : undefined
             }
