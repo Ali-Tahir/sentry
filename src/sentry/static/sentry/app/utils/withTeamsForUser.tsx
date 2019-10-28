@@ -49,10 +49,8 @@ const withTeamsForUser = <P extends InjectedTeamsProps>(
           loadingTeams: false,
         });
 
-        // also fill up TeamStore and ProjectStore so org context does not have
-        // to refetch org details due to lack of teams/projects
-        const projects = _.uniqBy(_.flatten(teams.map(team => team.projects)), 'id');
-        ProjectActions.loadProjects(projects);
+        // also fill up TeamStore so org context does not have to refetch org
+        // details due to lack of teams
         TeamActions.loadTeams(teams);
       } catch (error) {
         this.setState({

@@ -62,10 +62,6 @@ describe('withUserTeams HoC', function() {
         .prop('teams')
     ).toEqual(mockTeams);
 
-    expect(ProjectActions.loadProjects).toHaveBeenCalledWith([
-      mockProjectB,
-      mockProjectA,
-    ]);
     expect(TeamActions.loadTeams).toHaveBeenCalledWith(mockTeams);
   });
 });

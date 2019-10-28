@@ -23,7 +23,9 @@ class LightWeightInstallPromptBanner extends React.Component {
 
   render() {
     return (
-      <Projects orgId={this.props.organization.slug}>{this.renderChildren}</Projects>
+      <Projects orgId={this.props.organization.slug} allProjects>
+        {this.renderChildren}
+      </Projects>
     );
   }
 }
