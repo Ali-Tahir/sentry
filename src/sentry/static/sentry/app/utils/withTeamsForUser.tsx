@@ -4,7 +4,6 @@ import _ from 'lodash';
 import {Client} from 'app/api';
 import {Team, Organization} from 'app/types';
 import getDisplayName from 'app/utils/getDisplayName';
-import ProjectActions from 'app/actions/projectActions';
 import TeamActions from 'app/actions/teamActions';
 
 // We require these props when using this HOC
