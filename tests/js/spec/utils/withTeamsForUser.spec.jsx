@@ -8,6 +8,8 @@ import withTeamsForUser from 'app/utils/withTeamsForUser';
 describe('withUserTeams HoC', function() {
   const api = new MockApiClient();
   const organization = TestStubs.Organization();
+  delete organization.projects;
+  delete organization.teams;
 
   beforeEach(function() {
     MockApiClient.clearMockResponses();
@@ -62,10 +64,31 @@ describe('withUserTeams HoC', function() {
         .prop('teams')
     ).toEqual(mockTeams);
 
-    expect(ProjectActions.loadProjects).toHaveBeenCalledWith([
-      mockProjectB,
-      mockProjectA,
-    ]);
     expect(TeamActions.loadTeams).toHaveBeenCalledWith(mockTeams);
+  });
+
+  it('does not fetch teams if information is in organization', async function() {
+    const mockProjects = [TestStubs.Project()];
+    const mockTeams = [TestStubs.Team({projects: mockProjects})];
+    const mockOrg = TestStubs.Organization({teams: mockTeams});
+
+    const getTeamsMock = MockApiClient.addMockResponse({
+      url: `/organizations/${organization.slug}/user-teams/`,
+      body: mockTeams,
+    });
+
+    const MyComponent = () => null;
+    const Container = withTeamsForUser(MyComponent);
+    const wrapper = mount(<Container organization={mockOrg} api={api} />);
+    await tick();
+    expect(
+      wrapper
+        .update()
+        .find('MyComponent')
+        .prop('teams')
+    ).toEqual(mockTeams);
+
+    // ensure no request was made to get teams
+    expect(getTeamsMock).not.toHaveBeenCalled();
   });
 });

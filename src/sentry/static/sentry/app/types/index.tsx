@@ -56,6 +56,7 @@ export type Team = {
   id: string;
   slug: string;
   isMember: boolean;
+  projects?: Project[];
 };
 
 // This type is incomplete
