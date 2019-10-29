@@ -5,6 +5,7 @@ import {openInviteMembersModal} from 'app/actionCreators/modal';
 import {OrganizationDetailed} from 'app/types';
 import {Panel} from 'app/components/panels';
 import {t} from 'app/locale';
+import {trackAnalyticsEvent} from 'app/utils/analytics';
 import AsyncView from 'app/views/asyncView';
 import Badge from 'app/components/badge';
 import Button from 'app/components/button';
@@ -29,6 +30,19 @@ class OrganizationMembersWrapper extends AsyncView<Props> {
       ['inviteRequests', `/organizations/${orgId}/invite-requests/`],
       ['requestList', `/organizations/${orgId}/access-requests/`],
     ];
+  }
+
+  componentDidMount() {
+    const {organization} = this.props;
+
+    // record when requests tab is viewed on the members page
+    if (this.showNavTabs && !location.pathname.includes('/requests/')) {
+      trackAnalyticsEvent({
+        eventKey: 'invite_request.tab_viewed',
+        eventName: 'Invite Request Tab Viewed',
+        organization_id: organization.id,
+      });
+    }
   }
 
   getTitle() {
@@ -96,6 +110,7 @@ class OrganizationMembersWrapper extends AsyncView<Props> {
   renderBody() {
     const {
       children,
+      organization,
       params: {orgId},
     } = this.props;
     const {requestList, inviteRequests} = this.state;
@@ -140,6 +155,13 @@ class OrganizationMembersWrapper extends AsyncView<Props> {
               to={`/settings/${orgId}/members/requests/`}
               isActive={() => location.pathname.includes('/requests/')}
               data-test-id="requests-tab"
+              onClick={() => {
+                trackAnalyticsEvent({
+                  eventKey: 'invite_request.tab_clicked',
+                  eventName: 'Invite Request Tab Clicked',
+                  organization_id: organization.id,
+                });
+              }}
             >
               {t('Requests')}
             </ListLink>
